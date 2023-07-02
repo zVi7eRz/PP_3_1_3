@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create User</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+
+    form {
+      max-width: 300px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: #666;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+    }
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+    }
+
+    input[type="submit"] {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="header :: header"></div>
+<h1>Update User</h1>
+
+<form th:method="PATCH" th:action="@{/user/{id}(id = ${user.id})}" th:object="${user}">
+  <label for="name">Name:</label>
+  <input type="text" th:field="*{name}" id="name">
+
+  <label for="lastname">Lastname:</label>
+  <input type="text" th:field="*{lastname}" id="lastname">
+
+  <label for="mail">Mail:</label>
+  <input type="text" th:field="*{username}" id="mail">
+
+  <label for="password">Password:</label>
+  <input type="password" th:field="*{password}" id="password">
+  <div th:if="${@userSecurity.checkAdminRole(authorization)}">
+  <p>
+    <label>Roles:
+      <input type="checkbox" name="roles"
+             th:each="role : ${roles}"
+             th:text="${role.name}"
+             th:value="${role.id}"
+             th:field="*{roles}"
+      />
+    </label>
+  </p>
+  </div>
+  <br>
+
+  <input type="submit" value="Update">
+</form>
+</body>
+</html>
