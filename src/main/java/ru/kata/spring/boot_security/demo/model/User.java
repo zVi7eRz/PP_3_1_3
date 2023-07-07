@@ -5,7 +5,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -14,29 +16,19 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany(fetch = FetchType.LAZY)
-    private Set<Role> roles;
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", roles=" + roles +
-                '}';
-    }
-
+    @Column(name = "email", unique = true)
+    private String email;
+    @Column(name = "password")
+    private String password;
     @Column(name = "name")
     private String name;
     @Column(name = "lastname")
     private String lastname;
-    @Column(name = "mail", unique = true)
-    private String username;
-    @Column(name = "password")
-    private String password;
+    @Column(name = "age")
+    private int age;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<Role> roles;
+
 
     public Long getId() {
         return id;
@@ -44,6 +36,14 @@ public class User implements UserDetails {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public String getName() {
@@ -62,21 +62,45 @@ public class User implements UserDetails {
         this.lastname = lastname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
+    public String getEmail() {return email;}
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public int getAge() {
+        return age;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setAge(int age) {
+        this.age = age;
     }
+
+    public String toRolesString(Set<Role> roles) {
+        return roles.stream().map(role -> role.getName().replace("ROLE_", "")).collect(Collectors.joining(" "));
+    }
+
+    public boolean checkRolesAdmin(Set <Role> roles) {
+        return roles.stream().map(Role::getName).collect(Collectors.toList()).contains("ROLE_ADMIN");
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return age == user.age && Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(name, user.name) && Objects.equals(lastname, user.lastname) && Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password, name, lastname, age, roles);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
@@ -84,12 +108,14 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
+
     @Override
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

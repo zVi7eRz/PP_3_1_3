@@ -7,12 +7,8 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 @Configuration
@@ -20,34 +16,34 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final SuccessUserHandler successUserHandler;
+    public final PasswordEncoder passwordEncoder;
 
     @Autowired
     public WebSecurityConfig(UserService userService, SuccessUserHandler successUserHandler) {
         this.userService = userService;
         this.successUserHandler = successUserHandler;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user").authenticated()
-                .antMatchers("/user/{id}/**")
-                .access("hasRole('ADMIN') or (hasRole('USER') and @userSecurity.checkUsernameById(authentication, #id))")
+                .antMatchers("/index/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successUserHandler).permitAll()
                 .and()
-                .logout().permitAll();
+                .logout().permitAll()
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID");
+
     }
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
         authenticationProvider.setUserDetailsService(userService);
         return authenticationProvider;
     }
