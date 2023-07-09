@@ -9,8 +9,8 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-
 @Controller
+@RequestMapping("index")
 public class AdminController {
     private final UserService userService;
     private final RoleRepository roleRepository;
@@ -21,7 +21,7 @@ public class AdminController {
         this.roleRepository = roleRepository;
     }
 
-    @GetMapping("/index")
+    @GetMapping
     public String index(@ModelAttribute("newUser") User newUser, Model model,
                         @AuthenticationPrincipal User curUser) {
         model.addAttribute("users", userService.allUsers());
@@ -30,7 +30,7 @@ public class AdminController {
         return "index";
     }
 
-    @PostMapping("/index")
+    @PostMapping
     public String createUser(@ModelAttribute("user") User user) {
         if (!userService.allUsername().contains(user.getUsername())) {
             userService.saveUser(user);
@@ -38,14 +38,14 @@ public class AdminController {
         return "redirect:/index";
     }
 
-    @PatchMapping("/index/{id}")
+    @PatchMapping("/{id}")
     public String updateUser(@ModelAttribute("user") User user) {
         userService.saveUser(user);
         return "redirect:/index";
 
     }
 
-    @DeleteMapping("/index/{id}")
+    @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/index";
