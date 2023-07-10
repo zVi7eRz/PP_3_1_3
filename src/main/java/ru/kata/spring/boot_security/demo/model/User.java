@@ -87,6 +87,18 @@ public class User implements UserDetails {
         return roles.stream().map(Role::getName).collect(Collectors.toList()).contains("ROLE_ADMIN");
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", age=" + age +
+                ", roles=" + roles +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {

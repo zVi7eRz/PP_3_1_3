@@ -7,7 +7,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 </head>
+<style>
+    [readonly] {
+        background-color: #e9ecef;
+    }
+
+    textarea[readonly]:focus {
+        outline: 0;
+    }
+</style>
 <script>
+
+
     function hideElements(info) {
         document.getElementById(info).classList.add("d-none");
 
@@ -115,14 +126,14 @@
                                                                     <table class="table table-striped table-hover">
 
                                                                         <form th:method="PATCH"
-                                                                              th:action="@{/admin/{id}(id = ${user.id})}"
+                                                                              th:action="@{/admin}"
                                                                               th:object="${user}">
                                                                             <div class="mb-3">
                                                                                 <label for="id0"><b>ID</b></label>
-                                                                                <input th:name="id" th:type="text"
+                                                                                <input th:name="id" th:type="Long"
                                                                                        class="form-control"
                                                                                        id="id0" th:value="*{id}"
-                                                                                       disabled/>
+                                                                                       readonly />
                                                                             </div>
                                                                             <div class="mb-3">
                                                                                 <label for="1firstname"
@@ -221,14 +232,14 @@
                                                                     <table class="table table-striped table-hover">
 
                                                                         <form th:method="DELETE"
-                                                                              th:action="@{/admin/{id}(id = ${user.id})}"
+                                                                              th:action="@{/admin}"
                                                                               th:object="${user}">
                                                                             <div class="mb-3">
-                                                                                <label for="id0"><b>ID</b></label>
-                                                                                <input th:name="idD" th:type="text"
+                                                                                <label for="idD"><b>ID</b></label>
+                                                                                <input th:name="id" th:type="Long"
                                                                                        class="form-control"
                                                                                        id="idD" th:value="*{id}"
-                                                                                       disabled/>
+                                                                                       readonly/>
                                                                             </div>
                                                                             <div class="mb-3">
                                                                                 <label for="firstnameDelete"

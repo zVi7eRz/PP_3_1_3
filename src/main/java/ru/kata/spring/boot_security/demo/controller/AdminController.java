@@ -38,16 +38,16 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping
     public String updateUser(@ModelAttribute("user") User user) {
         userService.saveUser(user);
         return "redirect:/admin";
 
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    @DeleteMapping
+    public String deleteUser(@ModelAttribute("user") User user) {
+        userService.deleteUser(user.getId());
         return "redirect:/admin";
     }
 }
