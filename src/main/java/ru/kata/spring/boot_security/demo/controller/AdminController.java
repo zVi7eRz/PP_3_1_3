@@ -24,7 +24,7 @@ public class AdminController {
     @GetMapping
     public String index(@ModelAttribute("newUser") User newUser, Model model,
                         @AuthenticationPrincipal User curUser) {
-        model.addAttribute("users", userService.allUsers());
+        model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("curUser", curUser);
         return "index";
@@ -32,7 +32,7 @@ public class AdminController {
 
     @PostMapping
     public String createUser(@ModelAttribute("user") User user) {
-        if (!userService.allUsername().contains(user.getUsername())) {
+        if (!userService.getAllUsername().contains(user.getUsername())) {
             userService.saveUser(user);
         }
         return "redirect:/index";

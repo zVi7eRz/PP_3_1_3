@@ -39,16 +39,16 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<String> allUsername() { return allUsers().stream().map(User::getUsername).collect(Collectors.toList());}
+    public List<String> getAllUsername() { return getAllUsers().stream().map(User::getUsername).collect(Collectors.toList());}
     @Transactional(readOnly = true)
     @Override
-    public List<User> allUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
     public void saveUser(User user) {
-        User userFromDB = userRepository.findByUsername(user.getUsername());
+        User userFromDB = show(user.getId());
 
         if (userFromDB == null || user.getRoles() == null) {
             user.setRoles(Set.of(roleRepository.getById(2L)));
@@ -59,6 +59,10 @@ public class UserServiceImp implements UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         userRepository.save(user);
+    }
+    @Override
+    public User show(Long id) {
+        return userRepository.findById(id).orElseThrow();
     }
 
     @Override
