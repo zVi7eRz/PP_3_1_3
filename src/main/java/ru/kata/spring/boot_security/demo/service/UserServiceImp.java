@@ -60,6 +60,7 @@ public class UserServiceImp implements UserService {
         }
         userRepository.save(user);
     }
+    @Transactional(readOnly = true)
     @Override
     public User show(Long id) {
         return userRepository.findById(id).orElseThrow();
