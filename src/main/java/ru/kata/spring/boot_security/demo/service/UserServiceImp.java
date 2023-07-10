@@ -48,7 +48,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void saveUser(User user) {
-        User userFromDB = show(user.getId());
+        User userFromDB =  userRepository.findByUsername(user.getUsername());
 
         if (userFromDB == null || user.getRoles() == null) {
             user.setRoles(Set.of(roleRepository.getById(2L)));

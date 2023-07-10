@@ -10,7 +10,7 @@ import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 @Controller
-@RequestMapping("index")
+@RequestMapping("admin")
 public class AdminController {
     private final UserService userService;
     private final RoleRepository roleRepository;
@@ -35,19 +35,19 @@ public class AdminController {
         if (!userService.getAllUsername().contains(user.getUsername())) {
             userService.saveUser(user);
         }
-        return "redirect:/index";
+        return "redirect:/admin";
     }
 
     @PatchMapping("/{id}")
     public String updateUser(@ModelAttribute("user") User user) {
         userService.saveUser(user);
-        return "redirect:/index";
+        return "redirect:/admin";
 
     }
 
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return "redirect:/index";
+        return "redirect:/admin";
     }
 }
